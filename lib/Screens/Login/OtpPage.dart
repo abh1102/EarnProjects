@@ -128,7 +128,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 ElevatedButton(
                                   onPressed: _otpController.text.length == 5
                                       ? () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>MainContainerScreen()));
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text('Verifying OTP: ${_otpController.text}'),

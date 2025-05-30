@@ -6,6 +6,7 @@ import '../../Validations/LoginValidations.dart';
 
 import 'package:flutter/material.dart';
 
+import '../Signup/SignUp.dart';
 import 'OtpPage.dart';
 
 import 'package:flutter/material.dart';
@@ -121,6 +122,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
+                  SizedBox(height:20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("New User? "),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                          );
+                        },
+                        child: const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
 
                   const Spacer(),
                   const Text.rich(

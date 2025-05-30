@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 
+import '../Dialogbox/plansdialog.dart';
+import '../Home/HomeScreen.dart';
+
 class CustomDrawer extends StatelessWidget {
   final void Function()? onLogout;
 
@@ -36,10 +39,26 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
             _gradientDrawerItem(
+              icon: Icons.home,
+              title: 'Home',
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainContainerScreen()), // Replace with your widget
+                );
+              },
+            ),
+            _gradientDrawerItem(
               icon: Icons.payment,
               title: 'Our Plans',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const PlansDropdownDialog(),
+                );
+              },
             ),
+
             _gradientDrawerItem(
               icon: Icons.update,
               title: 'Renew Your Plan',
