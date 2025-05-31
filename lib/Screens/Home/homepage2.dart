@@ -1,3 +1,4 @@
+import 'package:earnprojects/Screens/Home/showcaseCards.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class ShowcaseHomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Unlock Your Potential.',
             style: TextStyle(
               fontSize: 26,
@@ -84,8 +85,10 @@ class ShowcaseHomePage extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
           ),
+
+
           const SizedBox(height: 30),
-          Text(
+          const Text(
             'Why Choose Our Platform?',
             style: TextStyle(
               fontSize: 20,
@@ -94,14 +97,37 @@ class ShowcaseHomePage extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20,),
-          Text(
+       const   SizedBox(height: 20,),
+         const Text(
             'Get access to verified project leads and grow your career or business.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey,
             ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 30),
+
+          const ShowcaseCard(
+            icon: Icons.school,
+            title: 'For Students',
+            subtitle: 'Gain experience & earn while learning',
+            startColor: Color(0xFF8B5CF6),
+            endColor: Color(0xFF7C3AED),
+          ),
+          const ShowcaseCard(
+            icon: Icons.work_outline,
+            title: 'For Professionals',
+            subtitle: 'Find high-paying side projects',
+            startColor: Color(0xFF6366F1),
+            endColor: Color(0xFF4F46E5),
+          ),
+          const ShowcaseCard(
+            icon: Icons.apartment,
+            title: 'For Agencies',
+            subtitle: 'Scale your business with qualified leads',
+            startColor: Color(0xFF10B981),
+            endColor: Color(0xFF059669),
           ),
           const SizedBox(height: 20),
 

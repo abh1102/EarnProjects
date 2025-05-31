@@ -4,9 +4,9 @@ import '../Drawer/Drawer.dart';
 
 import 'package:flutter/material.dart';
 import '../Drawer/Drawer.dart';
-import '../Professionals/Agency.dart';
+import '../Agency/Agency.dart';
 import '../Professionals/Professionals.dart';
-import '../Professionals/Students.dart';
+import '../StudentPlans/Students.dart';
 import 'homepage2.dart';
 class MainContainerScreen extends StatefulWidget {
   const MainContainerScreen({super.key});

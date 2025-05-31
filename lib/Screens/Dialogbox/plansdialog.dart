@@ -1,9 +1,13 @@
+import 'package:earnprojects/Screens/Agency/Agency.dart';
+import 'package:earnprojects/Screens/Professionals/Professionals.dart';
+import 'package:earnprojects/Screens/StudentPlans/StudentCardsPlan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 
 import '../AllPlans/AllPlansScreen.dart';
+import '../StudentPlans/Students.dart';
 
 class PlansDropdownDialog extends StatelessWidget {
   const PlansDropdownDialog({super.key});
@@ -42,20 +46,28 @@ class PlansDropdownDialog extends StatelessWidget {
                 context,
                 Icons.school_outlined,
                 'Student Plans',
-                    () => Navigator.pop(context),
+                    () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const StudentScreen()),
+                ),
               ),
               _buildPlanItem(
                 context,
                 Icons.work_outline,
                 'Professional Plans',
-                    () => Navigator.pop(context),
+                    () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ProfessionalScreen()),
+                ),
               ),
               _buildPlanItem(
                 context,
                 Icons.apartment_outlined,
                 'Agency Plans',
-                    () => Navigator.pop(context),
-              ),
+                    () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AgencyScreen()),
+                ),              ),
             ],
           ),
         ),

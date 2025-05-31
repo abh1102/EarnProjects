@@ -1,3 +1,4 @@
+import 'package:earnprojects/Screens/Dialogbox/support.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -62,12 +63,22 @@ class CustomDrawer extends StatelessWidget {
             _gradientDrawerItem(
               icon: Icons.update,
               title: 'Renew Your Plan',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const ContactDialog(),
+                );
+              },
             ),
             _gradientDrawerItem(
               icon: Icons.support_agent,
               title: 'Support',
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const ContactDialog(),
+                );
+              },
             ),
             _gradientDrawerItem(
               icon: Icons.person,
