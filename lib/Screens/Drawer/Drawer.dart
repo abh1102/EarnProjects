@@ -1,4 +1,6 @@
 import 'package:earnprojects/Screens/Dialogbox/support.dart';
+import 'package:earnprojects/Screens/Faq/faq.dart';
+import 'package:earnprojects/Screens/Testimonials/TestimonialsCards.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -60,7 +62,7 @@ class CustomDrawer extends StatelessWidget {
               },
             ),
 
-            _gradientDrawerItem(
+             _gradientDrawerItem(
               icon: Icons.update,
               title: 'Renew Your Plan',
               onTap: () {
@@ -87,14 +89,39 @@ class CustomDrawer extends StatelessWidget {
             ),
             _gradientDrawerItem(
               icon: Icons.chat,
-              title: 'Talk to Us',
+              title: 'Talk To Us',
               onTap: () {},
+            ),
+            _gradientDrawerItem(
+              icon: Icons.chat,
+              title: 'Feedbacks',
+              onTap: () {
+
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  TestimonialScreen()), // Replace with your widget
+                );
+
+
+              },
             ),
             _gradientDrawerItem(
               icon: Icons.logout,
               title: 'Logout',
-              onTap: onLogout ?? () {},
+              onTap: onLogout ??() {},
             ),
+            _gradientDrawerItem(
+              icon: Icons.chat,
+              title: 'Faq`s',
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  FAQScreen()), // Replace with your widget
+                );
+
+              },
+            ),
+
           ],
         ),
       ),

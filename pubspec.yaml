@@ -37,8 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   animated_text_kit: ^4.2.3
   pinput: ^5.0.1
+  font_awesome_flutter: ^10.8.0
   smooth_page_indicator: ^1.2.1
   url_launcher: ^6.3.1
+  webview_flutter: ^4.10.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

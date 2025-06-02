@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'CardsInHome.dart';
+import 'WebView.dart';
 
 class ShowcaseHomePage extends StatelessWidget {
   const ShowcaseHomePage({super.key});
@@ -155,8 +157,99 @@ class ShowcaseHomePage extends StatelessWidget {
             subtitle:
             'Access to training, certifications, and networking events',
           ),
+          const SizedBox(height: 40),
+          Column(
+            children: [
+              const SizedBox(height: 8),
+              Text(
+                "🤝 Connect With Us",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade900,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Follow us on social media and stay updated with the latest\nopportunities and tips!',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _socialIconButton(
+                    context,
+                    FontAwesomeIcons.linkedin,
+
+                    'https://www.linkedin.com/company/earnprojects/?viewAsMember=true',
+                    'LinkedIn',
+                    Colors.blue.shade800
+
+                  ),
+                  const SizedBox(width: 20),
+                  _socialIconButton(
+                    context,
+                    FontAwesomeIcons.instagram,
+                    'https://www.instagram.com/earn_project/#',
+                    'Instagram',
+                    Colors.pinkAccent
+
+                  ),
+                  const SizedBox(width: 20),
+                  _socialIconButton(
+                    context,
+                    FontAwesomeIcons.facebook,
+                    'https://www.facebook.com/people/EarnProjects/61577005977454/',
+                    'Facebook',
+                    Colors.blue.shade700,
+                  ),
+                  const SizedBox(width: 20),
+                  _socialIconButton(
+                    context,
+                    FontAwesomeIcons.youtube,
+                    'https://www.youtube.com/@EarnPROJECTSSS',
+                    'YouTube',
+                    Colors.redAccent,
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 30),
+
         ],
       ),
     );
   }
+  Widget _socialIconButton(BuildContext context,IconData icon, String url, String title,Color color) {
+    return GestureDetector(
+      onTap: () {
+        print("Tapped on ${title}, opening URL: $url");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => WebViewScreen(url: url, title: title),
+          ),
+        );
+      },
+      child: CircleAvatar(
+        radius: 28,
+        backgroundColor: Colors.grey[200],
+        child: CircleAvatar(
+          radius: 26,
+           backgroundColor: color.withOpacity(0.15),
+          child: Icon(
+            icon,
+            size: 30,
+             color: color,
+          ),
+        ),
+      ),
+    );
+  }
+
 }
