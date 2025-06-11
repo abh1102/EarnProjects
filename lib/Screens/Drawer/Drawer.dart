@@ -34,23 +34,23 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
               child: Text(
-                'Welcome!',
+                'Welcome AJ',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                 ),
               ),
             ),
-            _gradientDrawerItem(
-              icon: Icons.home,
-              title: 'Home',
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainContainerScreen()), // Replace with your widget
-                );
-              },
-            ),
+            // _gradientDrawerItem(
+            //   icon: Icons.home,
+            //   title: 'Home',
+            //   onTap: () {
+            //     Navigator.pushReplacement(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => const MainContainerScreen()), // Replace with your widget
+            //     );
+            //   },
+            // ),
             _gradientDrawerItem(
               icon: Icons.payment,
               title: 'Our Plans',
@@ -87,11 +87,11 @@ class CustomDrawer extends StatelessWidget {
               title: 'My Profile',
               onTap: () {},
             ),
-            _gradientDrawerItem(
-              icon: Icons.chat,
-              title: 'Talk To Us',
-              onTap: () {},
-            ),
+            // _gradientDrawerItem(
+            //   icon: Icons.chat,
+            //   title: 'Talk To Us',
+            //   onTap: () {},
+            // ),
             _gradientDrawerItem(
               icon: Icons.chat,
               title: 'Feedbacks',
@@ -105,11 +105,7 @@ class CustomDrawer extends StatelessWidget {
 
               },
             ),
-            _gradientDrawerItem(
-              icon: Icons.logout,
-              title: 'Logout',
-              onTap: onLogout ??() {},
-            ),
+
             _gradientDrawerItem(
               icon: Icons.chat,
               title: 'Faq`s',
@@ -120,6 +116,11 @@ class CustomDrawer extends StatelessWidget {
                 );
 
               },
+            ),
+            _gradientDrawerItem(
+              icon: Icons.logout,
+              title: 'Logout',
+              onTap: onLogout ??() {},
             ),
 
           ],

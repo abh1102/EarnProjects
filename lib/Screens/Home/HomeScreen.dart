@@ -50,12 +50,13 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
     }
   }
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(_getAppBarTitle()),
-          backgroundColor: const Color(0xFF4A00E0),
-        ),
+      appBar: AppBar(
+        title: Text(_getAppBarTitle()),
+        backgroundColor: const Color(0xFF4A00E0),
+      ),
       drawer: CustomDrawer(
         onLogout: () {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -63,13 +64,32 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
           );
         },
       ),
-      body: _getBody(),
+      body: Stack(
+        children: [
+          _getBody(),
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                setState(() {
+                  selectedIndex = -1;
+                });
+              },
+              label: const Text('Home'),
+              icon: const Icon(Icons.home),
+              backgroundColor: Colors.blueAccent,
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: selectedIndex,
         onItemTapped: _onItemTapped,
       ),
     );
   }
+
 }
 
 // class HomeScreen extends StatelessWidget {

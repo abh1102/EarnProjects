@@ -1,4 +1,6 @@
 import 'package:earnprojects/Screens/Home/showcaseCards.dart';
+import 'package:earnprojects/Screens/ProjectLeads/ViewLeadsScreen.dart';
+import 'package:earnprojects/Screens/Signup/SignUp.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
@@ -55,7 +57,7 @@ class ShowcaseHomePage extends StatelessWidget {
           const SizedBox(height: 30),
           ElevatedButton.icon(
             onPressed: () {
-              // Navigate to subscribe screen
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF7A1FFF),
@@ -73,7 +75,7 @@ class ShowcaseHomePage extends StatelessWidget {
           const SizedBox(height: 10),
           OutlinedButton(
             onPressed: () {
-              // Navigate to sample leads
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>ProjectLeadsScreen()));
             },
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50),

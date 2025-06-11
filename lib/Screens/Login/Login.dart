@@ -1,3 +1,4 @@
+import 'package:earnprojects/Screens/Home/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
@@ -131,11 +132,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                            MaterialPageRoute(builder: (context) => const MainContainerScreen()),
                           );
                         },
                         child: const Text(
-                          "Sign Up",
+                          "Continue As A Guest",
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
