@@ -40,7 +40,6 @@ class StudentScreen extends StatelessWidget {
         isPopular: true,
         onTap: () {},
       ),
-      
       Plan(
         title: 'Advanced Plan',
         tagline: 'More frequent project leads. Build your portfolio faster.',
@@ -56,7 +55,8 @@ class StudentScreen extends StatelessWidget {
         ],
         isPopular: true,
         onTap: () {},
-      ),  Plan(
+      ),
+      Plan(
         title: 'Pro Plan',
         tagline: 'Premium projects + experience letters on completion + support to close clients',
         price: '₹1299/month',
@@ -73,17 +73,18 @@ class StudentScreen extends StatelessWidget {
         isPopular: true,
         onTap: () {},
       ),
-
-      // Add more plans as needed...
     ];
 
     return Scaffold(
-
-
+      appBar: AppBar(
+        title: const Text('Plans For Students'),
+        backgroundColor: const Color(0xFF4D90FE),
+        elevation: 0,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           double cardWidth = constraints.maxWidth > 600
-              ? (constraints.maxWidth - 36) / 2  // for 2 columns with spacing
+              ? (constraints.maxWidth - 36) / 2
               : constraints.maxWidth;
 
           return SingleChildScrollView(
@@ -103,10 +104,4 @@ class StudentScreen extends StatelessWidget {
       ),
     );
   }
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(title: const Text('Student')),
-  //     body: const Center(child: Text('Student Content')),
-  //   );
-  // }
 }

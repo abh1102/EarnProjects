@@ -1,4 +1,11 @@
+import 'package:earnprojects/Screens/Agency/Agency.dart';
 import 'package:flutter/material.dart';
+import 'package:earnprojects/Screens/Agency/Agency.dart';
+import 'package:flutter/material.dart';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+
 class AgencyVerificationDialog extends StatefulWidget {
   const AgencyVerificationDialog({super.key});
 
@@ -8,15 +15,14 @@ class AgencyVerificationDialog extends StatefulWidget {
 
 class _AgencyVerificationDialogState extends State<AgencyVerificationDialog> {
   final _formKey = GlobalKey<FormState>();
+
   final _domainController = TextEditingController();
+  final _serviceController = TextEditingController();
   final _addressController = TextEditingController();
   final _stateController = TextEditingController();
   final _pinController = TextEditingController();
 
-  String? selectedService;
   String? selectedEmployeeCount;
-
-  final List<String> services = ['IT Services', 'Marketing', 'Design', 'Consulting'];
   final List<String> employeeCounts = ['1-10', '11-50', '51-200', '200+'];
 
   @override
@@ -38,49 +44,31 @@ class _AgencyVerificationDialogState extends State<AgencyVerificationDialog> {
                 ),
                 const SizedBox(height: 20),
 
-                _boxedField(_buildTextField("Company Domain *", _domainController, hint: "e.g. www.example.com")),
+                _buildTextField("Company Domain *", _domainController),
                 const SizedBox(height: 16),
 
-                _boxedField(
-                  DropdownButtonFormField<String>(
-                    value: selectedService,
-                    items: services.map((service) {
-                      return DropdownMenuItem(value: service, child: Text(service));
-                    }).toList(),
-                    onChanged: (value) => setState(() => selectedService = value),
-                    validator: (value) => value == null ? 'Please select service' : null,
-                    decoration: const InputDecoration(
-                      labelText: "Services Offered *",
-                      border:InputBorder.none,
-                      contentPadding: EdgeInsets.zero
-                    ),
-                  ),
+                _buildTextField(
+                   "Services Offered *",
+                  _serviceController,
+                  hintText: "e.g. Web development, IT services",
                 ),
                 const SizedBox(height: 16),
 
-                _boxedField(_buildTextField("Full Address *", _addressController)),
+                _buildTextField("Full Address *", _addressController),
                 const SizedBox(height: 16),
 
-                _boxedField(_buildTextField("State *", _stateController)),
+                _buildTextField("State *", _stateController),
                 const SizedBox(height: 16),
 
-                _boxedField(_buildTextField("PIN Code *", _pinController, keyboardType: TextInputType.number)),
+                _buildTextField("PIN Code *", _pinController, keyboardType: TextInputType.number),
                 const SizedBox(height: 16),
 
-                _boxedField(
-                  DropdownButtonFormField<String>(
-                    value: selectedEmployeeCount,
-                    items: employeeCounts.map((count) {
-                      return DropdownMenuItem(value: count, child: Text(count));
-                    }).toList(),
-                    onChanged: (value) => setState(() => selectedEmployeeCount = value),
-                    validator: (value) => value == null ? 'Please select employee count' : null,
-                    decoration: const InputDecoration(
-                      labelText: "No. of Employees *",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
+                _buildDropdownField(
+                  label: "No. of Employees *",
+                  value: selectedEmployeeCount,
+                  items: employeeCounts,
+                  onChanged: (val) => setState(() => selectedEmployeeCount = val),
+                  validator: (val) => val == null ? 'Please select employee count' : null,
                 ),
                 const SizedBox(height: 24),
 
@@ -90,13 +78,12 @@ class _AgencyVerificationDialogState extends State<AgencyVerificationDialog> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.of(context).pop({
-                          'domain': _domainController.text,
-                          'service': selectedService,
-                          'address': _addressController.text,
-                          'state': _stateController.text,
-                          'pin': _pinController.text,
-                          'employeeCount': selectedEmployeeCount,
+                        Navigator.pop(context);
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const AgencyScreen()),
+                          );
                         });
                       }
                     },
@@ -105,7 +92,7 @@ class _AgencyVerificationDialogState extends State<AgencyVerificationDialog> {
                     ),
                     child: const Text("Submit", style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -118,30 +105,45 @@ class _AgencyVerificationDialogState extends State<AgencyVerificationDialog> {
       String label,
       TextEditingController controller, {
         TextInputType keyboardType = TextInputType.text,
-        String? hint,
+        String? Function(String?)? validator,
+        String? hintText,
       }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      validator: (value) => (value == null || value.isEmpty) ? "Required" : null,
+      validator: validator ?? (value) {
+        return value == null || value.isEmpty ? "Required" : null;
+      },
       decoration: InputDecoration(
         labelText: label,
-        hintText: hint,
-        border: InputBorder.none, // ← removes the inner border
-        contentPadding: EdgeInsets.zero,
+        helperText: hintText, // replaces hintText for better visibility
+        border: const OutlineInputBorder(),
       ),
     );
   }
 
-  Widget _boxedField(Widget child) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
+
+  Widget _buildDropdownField({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required void Function(String?) onChanged,
+    required String? Function(String?) validator,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      items: items.map((item) {
+        return DropdownMenuItem(value: item, child: Text(item));
+      }).toList(),
+      onChanged: onChanged,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
       ),
-      child: child,
     );
   }
 }
+
+// Dummy screen for navigation
 

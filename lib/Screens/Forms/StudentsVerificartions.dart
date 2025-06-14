@@ -1,3 +1,4 @@
+import 'package:earnprojects/Screens/StudentPlans/Students.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -32,14 +33,31 @@ class _StudentVerificationDialogState extends State<StudentVerificationDialog> {
     }
   }
 
+  // void _submit() {
+  //   if (_formKey.currentState!.validate() && uploadedFile != null) {
+  //     Navigator.pop(context, {
+  //       'college': collegeController.text,
+  //       'city': cityController.text,
+  //       'state': stateController.text,
+  //       'pincode': pincodeController.text,
+  //       'file': uploadedFile,
+  //     });
+  //   } else if (uploadedFile == null) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text("Please upload an ID card or marksheet.")),
+  //     );
+  //   }
+  // }
   void _submit() {
     if (_formKey.currentState!.validate() && uploadedFile != null) {
-      Navigator.pop(context, {
-        'college': collegeController.text,
-        'city': cityController.text,
-        'state': stateController.text,
-        'pincode': pincodeController.text,
-        'file': uploadedFile,
+      Navigator.pop(context); // Close the dialog first
+
+      // Then use a post-frame callback to navigate after dialog is closed
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const StudentScreen()),
+        );
       });
     } else if (uploadedFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(

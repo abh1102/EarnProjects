@@ -77,7 +77,11 @@ class AgencyScreen extends StatelessWidget {
 
     return Scaffold(
 
-
+      appBar: AppBar(
+        title: const Text('Plans For Agency'),
+        backgroundColor: const Color(0xFF4D90FE),
+        elevation: 0,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           double cardWidth = constraints.maxWidth > 600

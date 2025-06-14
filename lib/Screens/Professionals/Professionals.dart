@@ -77,7 +77,11 @@ class ProfessionalScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-
+      appBar: AppBar(
+        title: const Text('Plans For Professionals'),
+        backgroundColor: const Color(0xFF4D90FE),
+        elevation: 0,
+      ),
 
       body: LayoutBuilder(
         builder: (context, constraints) {

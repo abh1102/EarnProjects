@@ -1,3 +1,4 @@
+import 'package:earnprojects/Screens/Professionals/Professionals.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -30,21 +31,36 @@ class _ProfessionalVerificationDialogState extends State<ProfessionalVerificatio
     }
   }
 
+  // void _submitForm() {
+  //   if (_formKey.currentState!.validate()) {
+  //     if (_selectedFile == null) {
+  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please upload a document")));
+  //       return;
+  //     }
+  //
+  //     Navigator.pop(context, {
+  //       'employer': _employerController.text,
+  //       'designation': _designationController.text,
+  //       'email': _emailController.text,
+  //       'employmentType': _employmentType,
+  //       'experience': _experienceController.text,
+  //       'file': _selectedFile,
+  //       'linkedin': _linkedinController.text,
+  //     });
+  //   }
+  // }
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      if (_selectedFile == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please upload a document")));
-        return;
-      }
 
-      Navigator.pop(context, {
-        'employer': _employerController.text,
-        'designation': _designationController.text,
-        'email': _emailController.text,
-        'employmentType': _employmentType,
-        'experience': _experienceController.text,
-        'file': _selectedFile,
-        'linkedin': _linkedinController.text,
+
+      Navigator.pop(context); // Close dialog first
+
+      // Navigate after dialog is closed
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const ProfessionalScreen()),
+        );
       });
     }
   }
@@ -108,25 +124,15 @@ class _ProfessionalVerificationDialogState extends State<ProfessionalVerificatio
                     return int.tryParse(value) != null ? null : "Enter valid number";
                   },
                 ),
-                const SizedBox(height: 16),
 
-                OutlinedButton.icon(
-                  onPressed: _pickFile,
-                  icon: const Icon(Icons.upload_file),
-                  label: Text(_selectedFile?.name ?? "Choose File"),
-                ),
+
                 const SizedBox(height: 8),
 
                 _buildTextField(
                   "LinkedIn Profile (Optional)",
                   _linkedinController,
-                  validator: (value) {
-                    if (value != null && value.isNotEmpty) {
-                      final urlPattern = r'^https?:\/\/(www\.)?linkedin\.com\/.*$';
-                      if (!RegExp(urlPattern).hasMatch(value)) return "Enter valid LinkedIn URL";
-                    }
-                    return null;
-                  },
+                  isOptional: true,
+
                 ),
                 const SizedBox(height: 24),
 
@@ -150,11 +156,14 @@ class _ProfessionalVerificationDialogState extends State<ProfessionalVerificatio
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
-      {TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator}) {
+      {TextInputType keyboardType = TextInputType.text, String? Function(String?)? validator, bool isOptional = false}) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      validator: validator ?? (value) => (value == null || value.isEmpty) ? "Required" : null,
+      validator: validator ?? (value) {
+        if (isOptional) return null; // Skip validation for optional fields
+        return (value == null || value.isEmpty) ? "Required" : null;
+      },
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
@@ -162,3 +171,4 @@ class _ProfessionalVerificationDialogState extends State<ProfessionalVerificatio
     );
   }
 }
+
