@@ -77,7 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Timer(Duration(seconds: 10), () {
+    Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
@@ -133,9 +133,9 @@ class _SplashScreenState extends State<SplashScreen>
                       child: ScaleTransition(
                         scale: _scaleAnimation,
                         child: Image.asset(
-                          'assets/image/logo.png',
-                          width: isLandscape ? screenSize.width * 0.15 : 150,
-                          height: isLandscape ? screenSize.width * 0.15 : 150,
+                          'assets/image/AppIcon.png',
+                          width: isLandscape ? screenSize.width * 0.25 : 150,
+                          height: isLandscape ? screenSize.width * 0.25 : 150,
                         ),
                       ),
                     ),

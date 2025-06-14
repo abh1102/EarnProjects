@@ -1,6 +1,8 @@
 import 'package:earnprojects/Screens/Splash_screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'Screens/Professionals/Professionals.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,7 +35,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  SplashScreen()
+      // home: ProfessionalScreen(),
+       home:  SplashScreen()
     );
   }
 }
