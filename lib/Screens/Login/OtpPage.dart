@@ -3,10 +3,17 @@ import 'package:earnprojects/Screens/Home/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
+import '../../Services/OtpServices.dart';
+import '../../Services/SignUpServices.dart';
 class OtpScreen extends StatefulWidget {
-  final String phoneNumber;
+  final String email; // Changed from phoneNumber to email
+  final VoidCallback? onVerificationSuccess; // Callback for successful verification
 
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen({
+    super.key,
+    required this.email,
+    this.onVerificationSuccess,
+  });
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -16,6 +23,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final TextEditingController _otpController = TextEditingController();
   int _secondsRemaining = 30;
   Timer? _timer;
+  bool _isVerifying = false;
 
   @override
   void initState() {
@@ -34,6 +42,61 @@ class _OtpScreenState extends State<OtpScreen> {
       }
     });
   }
+
+  Future<void> _verifyOtp() async {
+    if (_otpController.text.length != 6) return;
+
+    setState(() => _isVerifying = true);
+
+    try {
+      final response = await OtpService.verifyOtp(widget.email, _otpController.text);
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Email verified successfully!')),
+        );
+
+        // ✅ Callback
+        widget.onVerificationSuccess?.call();
+
+        // ✅ Navigate back
+        Navigator.pop(context); // or Navigator.pop(context, true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Verification failed: ${response.data['message']}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    } finally {
+      setState(() => _isVerifying = false);
+    }
+  }
+
+
+
+  // void _resendOtp() async {
+  //   try {
+  //     // Call your API to resend OTP
+  //     final response = await ApiService().resendOtp(email: widget.email);
+  //
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         _secondsRemaining = 30;
+  //         _startTimer();
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('OTP resent successfully!')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error: ${e.toString()}')),
+  //     );
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -100,42 +163,48 @@ class _OtpScreenState extends State<OtpScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.phone_android_rounded, color: Colors.blue),
+                                    const Icon(Icons.email, color: Colors.blue), // Changed from phone icon
                                     const SizedBox(width: 6),
                                     Text(
-                                      widget.phoneNumber,
+                                      widget.email, // Changed from phoneNumber to email
                                       style: const TextStyle(fontSize: 16),
                                     ),
-                                    const SizedBox(width: 6),
-                                    const Icon(Icons.edit, size: 16, color: Colors.blue),
                                   ],
                                 ),
                                 const SizedBox(height: 24),
                                 Pinput(
                                   controller: _otpController,
-                                  length: 5,
+                                  length: 6,
                                   defaultPinTheme: defaultPinTheme,
                                   onChanged: (value) {
                                     setState(() {}); // Rebuild to update button state
                                   },
                                 ),
                                 const SizedBox(height: 24),
-                                Text(
-                                  "Waiting for OTP... $_secondsRemaining",
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
+                                // Row(
+                                //   mainAxisAlignment: MainAxisAlignment.center,
+                                //   children: [
+                                //     Text(
+                                //       _secondsRemaining > 0
+                                //           ? "Resend OTP in $_secondsRemaining seconds"
+                                //           : "Didn't receive OTP?",
+                                //       style: const TextStyle(color: Colors.grey),
+                                //     ),
+                                //     if (_secondsRemaining == 0)
+                                //       // TextButton(
+                                //       //   // onPressed: _resendOtp,
+                                //       //   child: const Text(
+                                //       //     "Resend",
+                                //       //     style: TextStyle(color: Colors.blue),
+                                //       //   ),
+                                //       // ),
+                                //   ],
+                                // ),
                                 const SizedBox(height: 24),
                                 ElevatedButton(
-                                  onPressed: _otpController.text.length == 5
-                                      ? () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>MainContainerScreen()));
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Verifying OTP: ${_otpController.text}'),
-                                      ),
-                                    );
-                                  }
-                                      : null,
+                                    onPressed: (_otpController.text.length == 6 && !_isVerifying) ? _verifyOtp : null,
+
+
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue,
                                     minimumSize: const Size(double.infinity, 48),
@@ -144,7 +213,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                     ),
                                     disabledBackgroundColor: Colors.blue.withOpacity(0.2),
                                   ),
-                                  child: const Text(
+                                  child: _isVerifying
+                                      ? const CircularProgressIndicator(color: Colors.white)
+                                      : const Text(
                                     "Verify OTP",
                                     style: TextStyle(fontSize: 16),
                                   ),
