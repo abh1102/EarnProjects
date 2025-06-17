@@ -3,69 +3,40 @@ import 'package:flutter/foundation.dart';
 
 import '../Config/Config.dart';
 
-class ApiService {
-  final Dio _dio = Dio(BaseOptions(
-    baseUrl: ApiConfig.baseUrl,
-    connectTimeout: const Duration(seconds: 30),
-    receiveTimeout: const Duration(seconds: 30),
-  ));
+import 'package:dio/dio.dart';
 
-  Future<Response> signUp({
+// services/auth_service.dart
+
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class AuthService {
+  static Future<Response> completeSignup({
+    required String name,
+    required String phone,
     required String email,
     required String password,
-    required String confirmPassword,
-    required String name,
-    required String category,
-    required String mobile,
+    required String role,
   }) async {
     try {
-      final response = await _dio.post(
-        ApiConfig.signUpEndpoint,
+      final response = await Dio().post(
+        "https://earnprojects-backend.onrender.com/api/auth/complete-signup",
         data: {
+          "name": name,
+          "mobile": phone,
           "email": email,
           "password": password,
-          "confirmPassword": confirmPassword,
-          "name": name,
-          "category": category,
-          "mobile": mobile,
+          "role": role
         },
       );
-      return response;
-    } on DioException catch (e) {
-      if (kDebugMode) {
-        print('Dio error: $e');
-      }
-      rethrow;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
-      rethrow;
-    }
-  }
 
-  Future<Response> verifyEmail({
-    required String email,
-    required String otp,
-  }) async {
-    try {
-      final response = await _dio.post(
-        ApiConfig.verifyEmailEndpoint,
-        data: {
-          "email": email,
-          "otp": otp,
-        },
-      );
+      if (response.statusCode == 200 && response.data["token"] != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("token", response.data["token"]);
+      }
+
       return response;
-    } on DioException catch (e) {
-      if (kDebugMode) {
-        print('Dio error: $e');
-      }
-      rethrow;
     } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
       rethrow;
     }
   }
