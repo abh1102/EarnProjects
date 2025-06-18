@@ -20,7 +20,7 @@ class ProfessionalPlans {
           'Basic project filtering',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 0),
+        onTap: () => _navigateToCheckout(context, 0), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Silver Plan',
@@ -35,7 +35,7 @@ class ProfessionalPlans {
           'Resume builder tools',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 1),
+        onTap: () => _navigateToCheckout(context, 1), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Gold Plan',
@@ -51,7 +51,7 @@ class ProfessionalPlans {
           'Advanced project analytic',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 2),
+        onTap: () => _navigateToCheckout(context, 2), category: '', noOfLeads: 2,
       ),
     ];
   }

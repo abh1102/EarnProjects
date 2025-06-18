@@ -19,7 +19,7 @@ class StudentPlans {
           'Basic skill assessment',
           'Community access',
         ],
-        onTap: () => _navigateToCheckout(context, 0),
+        onTap: () => _navigateToCheckout(context, 0), isPopular: true, category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Basic Plan',
@@ -36,7 +36,7 @@ class StudentPlans {
           'Portfolio builder',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 1),
+        onTap: () => _navigateToCheckout(context, 1), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Advanced Plan',
@@ -52,7 +52,7 @@ class StudentPlans {
           'Training programs access',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 2),
+        onTap: () => _navigateToCheckout(context, 2), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Pro Plan',
@@ -69,7 +69,7 @@ class StudentPlans {
           'Agency analytics dashboard',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 3),
+        onTap: () => _navigateToCheckout(context, 3), category: '', noOfLeads: 2,
       ),
     ];
   }

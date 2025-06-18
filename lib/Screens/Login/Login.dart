@@ -1,4 +1,5 @@
 import 'package:earnprojects/Screens/Home/HomeScreen.dart';
+import 'package:earnprojects/Services/LoginServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +25,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      // Implement login logic
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      try {
+        final response = await LoginService.login(email, password);
+
+        if (response.statusCode == 200) {
+          // ✅ Navigate to home screen or show success
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login successful!')),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+          );
+        } else {
+          final errorMessage = response.data['error'] ?? 'Login failed';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: $errorMessage')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
+        );
+      }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {

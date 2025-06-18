@@ -478,9 +478,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           phone: _phoneController.text,
           email: _emailController.text,
           password: _passwordController.text,
+          confirmPassword: _confirmPasswordController.text,
           role: selectedRole!.toLowerCase(),
+          countryCode: 'IN', // Optional: customize per user input
         );
-
         // Step 2: Only proceed if signup successful
         if ( response.statusCode == 200) {
           // Step 2a: Show Preference Dialog after successful signup
@@ -520,9 +521,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${response.data['message']}')),
+            SnackBar(content: Text('Error: ${response.data['error'] ?? 'Something went wrong'}')),
           );
         }
+
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),

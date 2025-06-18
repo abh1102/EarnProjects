@@ -2,93 +2,64 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 import '../../Model/AllPlansModel.dart';
+import '../../Services/PlanServices.dart';
 import 'AllPlansCards.dart';
 
-class AllPlansScreen extends StatelessWidget {
+import 'package:flutter/material.dart';
+
+
+class AllPlansScreen extends StatefulWidget {
   const AllPlansScreen({super.key});
 
   @override
+  State<AllPlansScreen> createState() => _AllPlansScreenState();
+}
+
+class _AllPlansScreenState extends State<AllPlansScreen> {
+  List<Plan> plans = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPlans();
+  }
+
+  Future<void> _fetchPlans() async {
+    try {
+      final response = await PlanService.fetchPlans(category: 'all');
+      setState(() {
+        plans = response
+            .map((json) => Plan.fromJson(json, () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Selected: ${json['planName']}')),
+          );
+        }))
+            .toList();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<Plan> plans = [
-      Plan(
-        title: 'Starter Plan',
-        tagline: 'Small project leads, good for learning.',
-        price: '₹299/month',
-        discount: 'Save ₹989.00 annually',
-        features: [
-          '2-3 project leads per month',
-          'Basic project filtering',
-          'Email support',
-          'Completion certificates',
-          'Basic skill assessment',
-          'Community access',
-        ],
-        onTap: () {},
-      ),
-      Plan(
-        title: 'Basic Plan',
-        tagline: 'Ideal for earning potential. Kickstart career.',
-        price: '₹499/month',
-        discount: 'Save ₹1989.00 annually',
-        features: [
-          '5-7 project leads per month',
-          'Advanced project matching',
-          'Priority support',
-          'Experience letters',
-          'Skill workshops',
-          'Mentor connection',
-          'Portfolio builder',
-        ],
-        isPopular: true,
-        onTap: () {},
-      ),
-      Plan(
-        title: 'Basic Plan',
-        tagline: 'Ideal for earning potential. Kickstart career.',
-        price: '₹499/month',
-        discount: 'Save ₹1989.00 annually',
-        features: [
-          '5-7 project leads per month',
-          'Advanced project matching',
-          'Priority support',
-          'Experience letters',
-          'Skill workshops',
-          'Mentor connection',
-          'Portfolio builder',
-        ],
-        isPopular: true,
-        onTap: () {},
-      ),  Plan(
-        title: 'Basic Plan',
-        tagline: 'Ideal for earning potential. Kickstart career.',
-        price: '₹499/month',
-        discount: 'Save ₹1989.00 annually',
-        features: [
-          '5-7 project leads per month',
-          'Advanced project matching',
-          'Priority support',
-          'Experience letters',
-          'Skill workshops',
-          'Mentor connection',
-          'Portfolio builder',
-        ],
-        isPopular: true,
-        onTap: () {},
-      ),
-
-      // Add more plans as needed...
-    ];
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Our Plans"),
         centerTitle: true,
         backgroundColor: const Color(0xFF4A00E0),
       ),
-      body: LayoutBuilder(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : LayoutBuilder(
         builder: (context, constraints) {
           double cardWidth = constraints.maxWidth > 600
-              ? (constraints.maxWidth - 36) / 2  // for 2 columns with spacing
+              ? (constraints.maxWidth - 36) / 2
               : constraints.maxWidth;
 
           return SingleChildScrollView(

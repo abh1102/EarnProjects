@@ -19,7 +19,7 @@ class AgencyPlans {
           'Client communication tools',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 0),
+        onTap: () => _navigateToCheckout(context, 0), category: '', noOfLeads:2 ,
       ),
       Plan(
         title: 'Silver Plan',
@@ -34,7 +34,7 @@ class AgencyPlans {
           'Access to verified clients',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 1),
+        onTap: () => _navigateToCheckout(context, 1), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Gold Plan',
@@ -49,7 +49,7 @@ class AgencyPlans {
           'Client rating & review insights',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 2),
+        onTap: () => _navigateToCheckout(context, 2), category: '', noOfLeads: 2,
       ),
       Plan(
         title: 'Premium Member Plan',
@@ -65,7 +65,7 @@ class AgencyPlans {
           'Dedicated growth advisor',
         ],
         isPopular: true,
-        onTap: () => _navigateToCheckout(context, 3),
+        onTap: () => _navigateToCheckout(context, 3), category: '', noOfLeads: 2,
       ),
     ];
   }
