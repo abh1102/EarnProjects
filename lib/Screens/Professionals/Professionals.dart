@@ -6,35 +6,56 @@ import '../../Model/AllPlansModel.dart';
 // screens/professional_screen.dart
 import '../../Model/ProfessionalsPlans.dart';
 
-class ProfessionalScreen extends StatelessWidget {
+class ProfessionalScreen extends StatefulWidget {
   const ProfessionalScreen({super.key});
 
   @override
+  State<ProfessionalScreen> createState() => _ProfessionalScreenState();
+}
+
+class _ProfessionalScreenState extends State<ProfessionalScreen> {
+  late Future<List<Plan>> _plansFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _plansFuture = ProfessionalPlans.fetchPlans(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final plans = ProfessionalPlans.getPlans(context);
-
     return Scaffold(
+      appBar: AppBar(title: const Text("Professional Plans")),
+      body: FutureBuilder<List<Plan>>(
+        future: _plansFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text("Error loading plans: ${snapshot.error}"));
+          }
 
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double cardWidth = constraints.maxWidth > 600
-              ? (constraints.maxWidth - 36) / 2
-              : constraints.maxWidth;
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(12),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: plans.map((plan) {
-                return SizedBox(
-                  width: cardWidth,
-                  child: GestureDetector(
-                    onTap: plan.onTap,
-                    child: Professionalcards(plan: plan),
-                  ),
-                );
-              }).toList(),
-            ),
+          final plans = snapshot.data!;
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              double cardWidth = constraints.maxWidth > 600
+                  ? (constraints.maxWidth - 36) / 2
+                  : constraints.maxWidth;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(12),
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: plans.map((plan) {
+                    return SizedBox(
+                      width: cardWidth,
+                      child: Professionalcards(plan: plan),
+                    );
+                  }).toList(),
+                ),
+              );
+            },
           );
         },
       ),
