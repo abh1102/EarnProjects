@@ -2,6 +2,7 @@ import'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../Model/AllPlansModel.dart';
+import '../PdfController/Pdf.dart';
 class StudentsCheckoutScreen extends StatefulWidget {
   final Plan plan;
 
@@ -17,14 +18,16 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
 
   final ScrollController _scrollController = ScrollController();
   int _currentStep = 1;
-
+  bool _acceptedDeclaration = false;
+  bool _acceptedTerms = false;
   // Step 1 controllers
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _cityController = TextEditingController();
   final _dobController = TextEditingController();
-
+  final _declarationKey = GlobalKey();
+  final _termsKey = GlobalKey();
   // Step 2 controllers
   final _College = TextEditingController();
   final _Course = TextEditingController();
@@ -50,7 +53,16 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
       curve: Curves.easeInOut,
     );
   }
-
+  void _scrollToKey(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final plan = widget.plan;
@@ -141,7 +153,22 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
       case 3:
         return _buildForm3();
       case 4:
-        return _buildReview();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildReview(),
+            const SizedBox(height: 16),
+            KeyedSubtree(
+              key: _declarationKey,  // 🔹 track this section for scroll
+              child: _buildDeclarationCard(),
+            ),
+            const SizedBox(height: 12),
+            KeyedSubtree(
+              key: _termsKey,        // 🔹 track this section for scroll
+              child: _buildTermsCheckbox(),
+            ),
+          ],
+        );
       default:
         return const SizedBox();
     }
@@ -164,15 +191,33 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
             child: Text(_currentStep == 4 ? "Edit Your Details" : "Back"),
           ),
         ElevatedButton(
-          onPressed: () {
+          onPressed: (_currentStep == 4 &&
+              (!_acceptedDeclaration || !_acceptedTerms))
+              ? null
+              : () {
             if (_currentStep == 1 && _formKeyStep1.currentState!.validate()) {
               setState(() => _currentStep++);
             } else if (_currentStep == 2 && _formKeyStep2.currentState!.validate()) {
               setState(() => _currentStep++);
-            } else if (_currentStep == 3 && (_selectedAvailability != null && (_selectedProjectType != null || _otherProjectTypeController.text.isNotEmpty) && _selectedLanguageComfort != null)) {
+            } else if (_currentStep == 3 &&
+                (_selectedAvailability != null &&
+                    (_selectedProjectType != null || _otherProjectTypeController.text.isNotEmpty) &&
+                    _selectedLanguageComfort != null)) {
               setState(() => _currentStep++);
             } else if (_currentStep == 4) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Proceeding to checkout...")));
+              // Scroll checks and final submission
+              if (!_acceptedDeclaration) {
+                _scrollToKey(_declarationKey);
+                return;
+              }
+              if (!_acceptedTerms) {
+                _scrollToKey(_termsKey);
+                return;
+              }
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Proceeding to checkout...")),
+              );
             }
           },
           style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
@@ -295,6 +340,28 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
       ),
     );
   }
+  Widget _buildDeclarationCard() {
+    return Card(
+      color: Colors.deepPurple.shade50,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Declarations", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              value: _acceptedDeclaration,
+              onChanged: (val) => setState(() => _acceptedDeclaration = val!),
+              controlAffinity: ListTileControlAffinity.leading,
+              title: const Text("All the information I have provided is accurate and complete to the best of my knowledge."),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildTextField(String label, TextEditingController controller, {bool optional = false, TextInputType keyboard = TextInputType.text, int maxLines = 1}) {
     return Padding(
@@ -372,4 +439,37 @@ class _ProfessionCheckoutScreenState extends State<StudentsCheckoutScreen> {
       ),
     );
   }
+  Widget _buildTermsCheckbox() {
+    return CheckboxListTile(
+      value: _acceptedTerms,
+      onChanged: (val) => setState(() => _acceptedTerms = val!),
+      controlAffinity: ListTileControlAffinity.leading,
+      title: Row(
+        children: [
+          const Text("I agree to the "),
+          GestureDetector(
+            onTap: () {
+              PDFDownloadService.downloadPDF(
+                context,
+                assetPath: 'assets/Terms-and-Conditions.pdf',
+                fileName: 'terms_and_conditions.pdf',
+
+              );
+            },
+            // onTap: () {
+            //   // 🔹 Handle your PDF generation or viewing here
+            //   ScaffoldMessenger.of(context).showSnackBar(
+            //     const SnackBar(content: Text("Opening Terms & Conditions PDF...")),
+            //   );
+            // },
+            child: const Text(
+              "Terms and Conditions",
+              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 }

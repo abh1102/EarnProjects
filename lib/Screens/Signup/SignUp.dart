@@ -462,6 +462,80 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  // Future<void> _handleSignUp() async {
+  //   if (_isLoading) return;
+  //
+  //   final isFormValid = _formKey.currentState!.validate();
+  //   final isRoleValid = validateRole() == null;
+  //
+  //   if (isFormValid && isRoleValid) {
+  //     setState(() => _isLoading = true);
+  //
+  //     try {
+  //       // Step 1: Direct API call first
+  //       final response = await AuthService.completeSignup(
+  //         name: _nameController.text,
+  //         phone: _phoneController.text,
+  //         email: _emailController.text,
+  //         password: _passwordController.text,
+  //         confirmPassword: _confirmPasswordController.text,
+  //         role: selectedRole!.toLowerCase(),
+  //         countryCode: 'IN', // Optional: customize per user input
+  //       );
+  //       // Step 2: Only proceed if signup successful
+  //       if ( response.statusCode == 200) {
+  //         // Step 2a: Show Preference Dialog after successful signup
+  //         final preferenceResult = await showDialog(
+  //           context: context,
+  //           builder: (_) => const PreferenceDialog(),
+  //         );
+  //
+  //         if (preferenceResult != null) {
+  //           // Step 2b: Show role-based verification after preferences
+  //           dynamic verificationResult;
+  //
+  //           if (selectedRole == 'Student') {
+  //             verificationResult = await showDialog(
+  //               context: context,
+  //               builder: (_) => const StudentVerificationDialog(),
+  //             );
+  //           } else if (selectedRole == 'Professional') {
+  //             verificationResult = await showDialog(
+  //               context: context,
+  //               builder: (_) => const ProfessionalVerificationDialog(),
+  //             );
+  //           } else if (selectedRole == 'Agency') {
+  //             verificationResult = await showDialog(
+  //               context: context,
+  //               builder: (_) => const AgencyVerificationDialog(),
+  //             );
+  //           }
+  //
+  //           // You can handle verification result if needed
+  //           if (verificationResult != null) {
+  //             // Optionally show success message or navigate somewhere
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               const SnackBar(content: Text('Registration complete!')),
+  //             );
+  //           }
+  //         }
+  //       } else {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text('Error: ${response.data['error'] ?? 'Something went wrong'}')),
+  //         );
+  //       }
+  //
+  //     } catch (e) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Error: ${e.toString()}')),
+  //       );
+  //     } finally {
+  //       setState(() => _isLoading = false);
+  //     }
+  //   } else {
+  //     setState(() {});
+  //   }
+  // }
   Future<void> _handleSignUp() async {
     if (_isLoading) return;
 
@@ -472,7 +546,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() => _isLoading = true);
 
       try {
-        // Step 1: Direct API call first
         final response = await AuthService.completeSignup(
           name: _nameController.text,
           phone: _phoneController.text,
@@ -480,51 +553,123 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: _passwordController.text,
           confirmPassword: _confirmPasswordController.text,
           role: selectedRole!.toLowerCase(),
-          countryCode: 'IN', // Optional: customize per user input
+          countryCode: 'IN',
         );
-        // Step 2: Only proceed if signup successful
-        if ( response.statusCode == 200) {
-          // Step 2a: Show Preference Dialog after successful signup
+
+        if (response.statusCode == 200) {
+          // Show preference selection
           final preferenceResult = await showDialog(
             context: context,
             builder: (_) => const PreferenceDialog(),
           );
 
           if (preferenceResult != null) {
-            // Step 2b: Show role-based verification after preferences
-            dynamic verificationResult;
+            final selected = preferenceResult["selected"] as List<String>;
+            final custom = preferenceResult["custom"] as String?;
 
+            Map<String, dynamic>? verificationResult;
+
+            // 👇 Show respective verification dialog
             if (selectedRole == 'Student') {
               verificationResult = await showDialog(
                 context: context,
                 builder: (_) => const StudentVerificationDialog(),
               );
+
+              if (verificationResult != null) {
+                final fullData = {
+                  "prefference": {
+                    "selected": selected,
+                    if (custom != null) "custom": custom,
+                  },
+                  "basic_data": {
+                    "college": verificationResult["college"],
+                    "fullAddress": "${verificationResult["city"]}, ${verificationResult["state"]}",
+                    "state": verificationResult["state"],
+                    "pinCode": verificationResult["pincode"],
+                    "employees": "1",
+                    "linkedIn": "",
+                    "domain": "",
+                    "services": "",
+                  }
+                };
+
+                await AuthService.submitPreferences(
+                  selectedPreferences: selected,
+                  customInput: custom,
+                  basicData: fullData["basic_data"]!,
+                );
+              }
             } else if (selectedRole == 'Professional') {
               verificationResult = await showDialog(
                 context: context,
                 builder: (_) => const ProfessionalVerificationDialog(),
               );
+
+              if (verificationResult != null) {
+                final fullData = {
+                  "prefference": {
+                    "selected": selected,
+                    if (custom != null) "custom": custom,
+                  },
+                  "basic_data": {
+                    "linkedIn": verificationResult["linkedin"] ?? "",
+                    "domain": "",
+                    "services": verificationResult["designation"],
+                    "fullAddress": "", // Add address if needed
+                    "state": "",
+                    "pinCode": "",
+                    "employees": "1",
+                  }
+                };
+
+                await AuthService.submitPreferences(
+                  selectedPreferences: selected,
+                  customInput: custom,
+                  basicData: fullData["basic_data"]!,
+                );
+              }
             } else if (selectedRole == 'Agency') {
               verificationResult = await showDialog(
                 context: context,
                 builder: (_) => const AgencyVerificationDialog(),
               );
+
+              if (verificationResult != null) {
+                final fullData = {
+                  "prefference": {
+                    "selected": selected,
+                    if (custom != null) "custom": custom,
+                  },
+                  "basic_data": {
+                    "linkedIn": "",
+                    "domain": verificationResult["domain"],
+                    "services": verificationResult["services"],
+                    "fullAddress": verificationResult["address"],
+                    "state": verificationResult["state"],
+                    "pinCode": verificationResult["pinCode"],
+                    "employees": verificationResult["employees"],
+                  }
+                };
+
+                await AuthService.submitPreferences(
+                  selectedPreferences: selected,
+                  customInput: custom,
+                  basicData: fullData["basic_data"]!,
+                );
+              }
             }
 
-            // You can handle verification result if needed
-            if (verificationResult != null) {
-              // Optionally show success message or navigate somewhere
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Registration complete!')),
-              );
-            }
+            // ✅ Show success after final API call
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registration complete!')),
+            );
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${response.data['error'] ?? 'Something went wrong'}')),
           );
         }
-
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.toString()}')),
@@ -536,6 +681,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {});
     }
   }
+
   Future<void> _navigateToOtpScreen() async {
     final result = await Navigator.push(
       context,

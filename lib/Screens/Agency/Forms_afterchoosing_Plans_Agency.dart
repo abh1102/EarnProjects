@@ -2,6 +2,7 @@ import'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../Model/AllPlansModel.dart';
+import '../PdfController/Pdf.dart';
 class AgencyCheckoutScreen extends StatefulWidget {
   final Plan plan;
 
@@ -17,7 +18,10 @@ class _ProfessionCheckoutScreenState extends State<AgencyCheckoutScreen> {
 
   final ScrollController _scrollController = ScrollController();
   int _currentStep = 1;
-
+  bool _acceptedDeclaration = false;
+  bool _acceptedTerms = false;
+  final _declarationKey = GlobalKey();
+  final _termsKey = GlobalKey();
   // Step 1 controllers
   final _AgencynameController = TextEditingController();
   final _Website = TextEditingController();
@@ -53,6 +57,16 @@ final _CoreService=TextEditingController();
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+  void _scrollToKey(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -145,7 +159,23 @@ final _CoreService=TextEditingController();
       case 3:
         return _buildForm3();
       case 4:
-        return _buildReview();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildReview(),
+            const SizedBox(height: 16),
+            KeyedSubtree(
+              key: _declarationKey,  // 🔹 track this section for scroll
+              child: _buildDeclarationCard(),
+            ),
+            const SizedBox(height: 12),
+            KeyedSubtree(
+              key: _termsKey,        // 🔹 track this section for scroll
+              child: _buildTermsCheckbox(),
+            ),
+          ],
+        );
+
       default:
         return const SizedBox();
     }
@@ -308,6 +338,28 @@ final _CoreService=TextEditingController();
       ),
     );
   }
+  Widget _buildDeclarationCard() {
+    return Card(
+      color: Colors.deepPurple.shade50,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Declarations", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              value: _acceptedDeclaration,
+              onChanged: (val) => setState(() => _acceptedDeclaration = val!),
+              controlAffinity: ListTileControlAffinity.leading,
+              title: const Text("All the information I have provided is accurate and complete to the best of my knowledge."),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildTextField(String label, TextEditingController controller, {bool optional = false, TextInputType keyboard = TextInputType.text, int maxLines = 1}) {
     return Padding(
@@ -418,4 +470,40 @@ final _CoreService=TextEditingController();
         ],
       ),
     );
-  }}
+  }
+
+  Widget _buildTermsCheckbox() {
+    return CheckboxListTile(
+      value: _acceptedTerms,
+      onChanged: (val) => setState(() => _acceptedTerms = val!),
+      controlAffinity: ListTileControlAffinity.leading,
+      title: Row(
+        children: [
+          const Text("I agree to the "),
+          GestureDetector(
+            onTap: () {
+              PDFDownloadService.downloadPDF(
+                context,
+                assetPath: 'assets/Terms-and-Conditions.pdf',
+                fileName: 'terms_and_conditions.pdf',
+
+              );
+            },
+            // onTap: () {
+            //   // 🔹 Handle your PDF generation or viewing here
+            //   ScaffoldMessenger.of(context).showSnackBar(
+            //     const SnackBar(content: Text("Opening Terms & Conditions PDF...")),
+            //   );
+            // },
+            child: const Text(
+              "Terms and Conditions",
+              style: TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+
+}
